@@ -1,17 +1,29 @@
 h1 タスク一覧
-= link_to '新規登録', new_task_path, class: 'btn btn-primary'
+button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal_rails" タスク作成
+button type="button" class="btn btn-danger" onclick='resetTask()' ゲストタスク リセット
+
+= form_with model: Task.new, local: false do |f|
+  div class="modal fade" id="exampleModal_rails" tabindex="-1" aria-labelledby="exampleModalLabel_rails" aria-hidden="true"
+    div class="modal-dialog"
+      div class="modal-content"
+        div class="modal-header"
+          h5 class="modal-title" id="exampleModalLabel_rails" Modal title
+          button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+        div class="modal-body"
+          = f.text_field :title, placeholder: 'タスク名'
+        div class="modal-footer"
+          button type="button" class="btn btn-secondary" data-bs-dismiss="modal" 閉じる
+          = f.submit 'タスク作成', class: 'btn btn-primary'
 
 .mb-3
 table.table.table-hover#targetTable
   thead.thead-default 
     tr 
-      th タスク名
-      th 内容
+      th タスク
   tbody
     - @tasks.each do |task|
       tr 
-        td= task.title 
-        td= task.content 
+        td= task.title
 
 button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" タスク作成
 
@@ -25,21 +37,22 @@ div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleM
         input type="text" id="task-title" name="task-title"
       div class="modal-footer"
         button type="button" class="btn btn-secondary" data-bs-dismiss="modal" 閉じる
-        button type="button" class="btn btn-primary" id="task-create" 作成
+        button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="task-create" onclick="insertTask()" 作成
 
 javascript:
-  document.getElementById('task-create').onclick = function() {
-    console.log(document.getElementById('task-title').value)
+  function insertTask() {
+    task = document.getElementById('task-title').value
     let table = document.getElementById('targetTable');
     let newRow = table.insertRow();
 
     let newCell = newRow.insertCell();
-    let newText = document.createTextNode('sample 1');
+    let newText = document.createTextNode(task);
     newCell.appendChild(newText);
 
-    newCell = newRow.insertCell();
-    newText = document.createTextNode('content ');
-    newCell.appendChild(newText);
+    tasks = localStorage.getItem('tasks').split(',')
+    tasks.push(task)
+    localStorage.setItem('tasks', tasks)
+    
   }
 
   function formatDate(dt) {
@@ -49,21 +62,46 @@ javascript:
     return (y + '-' + m + '-' + d);
   }
 
+  function reload(){
+    tasks = localStorage.getItem('tasks').split(',')
+    
+    for (let i = 0; i < tasks.length; i++) {
+      let table = document.getElementById('targetTable');
+      let newRow = table.insertRow();
+
+      let newCell = newRow.insertCell();
+      let newText = document.createTextNode(tasks[i]);
+      newCell.appendChild(newText);
+    }
+  }
   function initTask(){
     let tasks = ['sample1', 'sample2']
     let time = formatDate(new Date());
     localStorage.setItem('tasks', tasks)
     localStorage.setItem('time', time)
 
-    tasks_index = localStorage.getItem('tasks')
+    tasks = localStorage.getItem('tasks').split(',')
     time_index = localStorage.getItem('time')
     
-    console.log(time_index)
+    for (let i = 0; i < tasks.length; i++) {
+      let table = document.getElementById('targetTable');
+      let newRow = table.insertRow();
+
+      let newCell = newRow.insertCell();
+      let newText = document.createTextNode(tasks[i]);
+      newCell.appendChild(newText);
+    }
   }
+
+  function resetTask(){
+    localStorage.setItem('tasks', '')
+    location.href = '/'
+  }
+
   now = formatDate(new Date());
   time = localStorage.getItem('time');
   if (now === localStorage.getItem('time')){
-
+    reload()
   }else {
     initTask()
   }
