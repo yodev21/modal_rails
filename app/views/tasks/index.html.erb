@@ -1,0 +1,7 @@
+<% if @tasks.present? %>
+  <% @tasks.each do |task| %>
+    <%= task.title %>
+    <%= task.content %>
+  <% end %>
+<% end %>
+<%= link_to '作成', new_task_path %>
