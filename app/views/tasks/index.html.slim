@@ -1,27 +1,69 @@
-- if @tasks.present?
-  - @tasks.each do |task|
-    = task.title
-    = task.content
-= link_to '作成', new_task_path, class: 'btn btn-primary'
-= link_to "仮のボタンです", "#", class: "btn btn-primary"
-button.btn.btn-primary[type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"]
-  |  Launch demo modal 
-#exampleModal.modal.fade[tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"]
-  .modal-dialog
-    .modal-content
-      .modal-header
-        h5#exampleModalLabel.modal-title
-          | Modal title
-        button.btn-close[type="button" data-bs-dismiss="modal" aria-label="Close"]
-      .modal-body
-        = form_with model: @task do |f|
-          = f.label :title
-          = f.text_field :title
-          = f.label :content
-          = f.text_field :content
-          = f.submit
-      .modal-footer
-        button.btn.btn-secondary[type="button" data-bs-dismiss="modal"]
-          | Close
-        button.btn.btn-primary[type="button"]
-          | Save changes
+h1 タスク一覧
+= link_to '新規登録', new_task_path, class: 'btn btn-primary'
+
+.mb-3
+table.table.table-hover#targetTable
+  thead.thead-default 
+    tr 
+      th タスク名
+      th 内容
+  tbody
+    - @tasks.each do |task|
+      tr 
+        td= task.title 
+        td= task.content 
+
+button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" タスク作成
+
+div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+  div class="modal-dialog"
+    div class="modal-content"
+      div class="modal-header"
+        h5 class="modal-title" id="exampleModalLabel" Modal title
+        button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+      div class="modal-body"
+        input type="text" id="task-title" name="task-title"
+      div class="modal-footer"
+        button type="button" class="btn btn-secondary" data-bs-dismiss="modal" 閉じる
+        button type="button" class="btn btn-primary" id="task-create" 作成
+
+javascript:
+  document.getElementById('task-create').onclick = function() {
+    console.log(document.getElementById('task-title').value)
+    let table = document.getElementById('targetTable');
+    let newRow = table.insertRow();
+
+    let newCell = newRow.insertCell();
+    let newText = document.createTextNode('sample 1');
+    newCell.appendChild(newText);
+
+    newCell = newRow.insertCell();
+    newText = document.createTextNode('content ');
+    newCell.appendChild(newText);
+  }
+
+  function formatDate(dt) {
+    var y = dt.getFullYear();
+    var m = ('00' + (dt.getMonth()+1)).slice(-2);
+    var d = ('00' + dt.getDate()).slice(-2);
+    return (y + '-' + m + '-' + d);
+  }
+
+  function initTask(){
+    let tasks = ['sample1', 'sample2']
+    let time = formatDate(new Date());
+    localStorage.setItem('tasks', tasks)
+    localStorage.setItem('time', time)
+
+    tasks_index = localStorage.getItem('tasks')
+    time_index = localStorage.getItem('time')
+    
+    console.log(time_index)
+  }
+  now = formatDate(new Date());
+  time = localStorage.getItem('time');
+  if (now === localStorage.getItem('time')){
+
+  }else {
+    initTask()
+  }
