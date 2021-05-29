@@ -19,6 +19,8 @@ gem 'bootsnap', '>= 1.4.4', require: false
 
 gem 'slim-rails'
 gem 'html2slim'
+# https://qiita.com/shimadama/items/7e5c3d75c9a9f51abdd5
+gem 'rails-i18n'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
